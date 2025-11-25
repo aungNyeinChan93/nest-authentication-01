@@ -50,11 +50,14 @@ export class AuthService {
     }
 
 
-    public async login(loginDto: LoginDto) {
+    public async login(loginDto: LoginDto): Promise<{ loginToken: string }> {
         const user = await this.prisma.user.findFirst({ where: { email: loginDto?.email } })
         if (!user) throw new ConflictException('email is not correct!');
+        if (!(await this.verifyPassword(loginDto?.password, user?.password))) {
+            throw new ConflictException('user credential is not correct!')
+        };
+        const loginToken = this.generateToken({ id: user?.id, email: user?.email })
+        return { loginToken }
     };
-
-
 
 }

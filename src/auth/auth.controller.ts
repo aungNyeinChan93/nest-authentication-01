@@ -26,6 +26,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   test(@Req() req: Request, @CurrentUser() user: Partial<User>) {
     const token = req.headers.authorization?.split(" ")[1]
-    return { token, user }
+    return { token, user, test: req?.user }
   }
 }
